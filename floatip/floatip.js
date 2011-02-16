@@ -16,12 +16,21 @@
  *			top:距离触点右上角的上边距
  *			stay:mouseout多少毫秒后消失,
  *			hack:hack函数，参数是[x,y]，主要针对ie系
+ *			target:目标DOm对象
+ *			onshow:callback
  * Tip:msg需要在node的rel属性中指定
  *			
  *		
  */
 YUI.namespace('Y.Floatip');
 YUI.add('floatip',function(Y){
+
+	if(typeof Y.Node.prototype.queryAll == 'undefined'){
+		Y.Node.prototype.queryAll = Y.Node.prototype.all;
+		Y.Node.prototype.query = Y.Node.prototype.one;
+		Y.Node.get = Y.Node.one;
+	}
+
 	var FloatTip = function(){
 		this.init.apply(this,arguments);
 	};
@@ -34,7 +43,12 @@ YUI.add('floatip',function(Y){
 			var that = this;
 			that.buildParam(config);
 			var tips_trigger = that.tips_trigger = node;
-			var tip = that.tip = Y.Node.create('<div class="'+that.float_class+' hidden"></div>');
+			if(!that.target === false){
+				var tip = that.target;
+			}else{
+				var tip = Y.Node.create('<div class="'+that.float_class+' hidden"></div>');
+			}
+			that.tip = tip;
 			that.showing = false;
 			Y.one('body').append(tip);
 			that.bindEvent();
@@ -87,8 +101,9 @@ YUI.add('floatip',function(Y){
 			this.hack = (typeof o.hack == 'undefined'||o.hack == null)?false:o.hack;
 			this.top = (typeof o.top == 'undefined'||o.top == null)?0:o.top;
 			this.stay = (typeof o.stay == 'undefined'||o.stay == null)?300:o.stay;
+			this.target = (typeof o.target == 'undefined'||o.target == null)?false:o.target;
+			this.onshow = (typeof o.onshow == 'undefined'||o.onshow == null)?new Function:o.onshow;
 			return this;
-
 		},
 		show:function(trigger){
 			var that = this;
@@ -103,7 +118,11 @@ YUI.add('floatip',function(Y){
 			}			
 			that.tip.setStyle('left',_x.toString()+'px');
 			that.tip.setStyle('top',_y.toString()+'px');
-			that.tip.set('innerHTML',txt);
+			if(that.target === false){
+				//that.tip.html(txt);
+				that.tip.set('innerHTML',txt);
+			}
+			that.onshow.call(that,that);
 		},
 		hide:function(){
 			var that = this;

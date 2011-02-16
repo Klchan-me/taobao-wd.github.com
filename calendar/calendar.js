@@ -36,6 +36,7 @@ YUI.add('calendar', function (Y) {
 	if(typeof Y.Node.prototype.queryAll == 'undefined'){
 		Y.Node.prototype.queryAll = Y.Node.prototype.all;
 		Y.Node.prototype.query = Y.Node.prototype.one;
+		Y.Node.get = Y.Node.one;
 	}
 	Y.Calendar = function(){
 		this.init.apply(this,arguments);

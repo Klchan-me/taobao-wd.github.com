@@ -3,8 +3,8 @@
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>Cubee 日历控件</title>
-<script type="text/javascript" src="http://cn.yimg.com/i/yui/3.0.0/build/yui/yui-min.js"></script>
+<title>日历控件</title>
+<script src="http://a.tbcdn.cn/s/yui/3.3.0/build/yui/yui-min.js"></script>
 <style>
 	body { font: 14px Georgia,"Times New Roman",Times,sans-serif; color: #444; }
 	h1 { font-size: 26px; color: #00859D; font-family: Constantia,serif; }
@@ -13,7 +13,7 @@
 </style>
 </head>
 <body  class="yui-skin-sam">
-<h1>Cubee 日历控件 v0.1</h1>
+<h1>日历控件 v1.0</h1>
 <hr size=1 />
 <h3>静态日历，以及单击回调</h3>
 <div id="J_calendar"></div>
@@ -74,11 +74,12 @@ var showdate = function(n,d){//计算d天的前几天或者后几天，返回dat
 
 YUI({
 	combine:true,
-	base:'http://cn.yimg.com/i/yui/3.0.0/build/', 
-	root:"i/yui/3.0.0/build/",  
-	comboBase:"http://cn.yimg.com/combo?", 
-	charset:'utf-8',
-	loadOptional:true,
+	comboBase:'http://a.tbcdn.cn/??',
+	root:'s/yui/3.3.0/build/',
+	filter:{
+		'searchExp': "&", 
+		'replaceStr': ","
+	},
 	modules:{
 		'calendar-skin':{//默认皮肤
 			fullpath:'../skin/default.css',
