@@ -4,7 +4,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>cubee 弹出框系列</title>
-<script type="text/javascript" src="http://cn.yimg.com/i/yui/3.0.0/build/yui/yui-min.js"></script>
+<!--script type="text/javascript" src="http://cn.yimg.com/i/yui/3.0.0/build/yui/yui-min.js"></script-->
+<script src="http://a.tbcdn.cn/s/yui/3.3.0/build/yui/yui-min.js"></script>
 <style>
 	body { font: 14px Georgia,"Times New Roman",Times,sans-serif; color: #444; }
 	h1 { font-size: 26px; color: #00859D; font-family: Constantia,serif; }
@@ -12,8 +13,10 @@
 	code {font-family:"Courier New"}
 </style>
 </head>
-<body  class="yui-skin-sam">
-<h1>Cubee 弹出框控件 v0.1</h1>
+<body  class="yui3-skin-sam">
+<h1>弹出框控件 v1.0</h1>
+基于yui 3.3.0 如果要该回基于yui 3.0.0的话，就需要将样式中的yui3-widget改为yui-widget-... <br />
+如果基于3.0.0,则不支持resize
 <hr size=1 />
 <p style="clear:both;">弹框的演示</p>
 <button id="new">提示</button>
@@ -28,6 +31,7 @@
 <button id="unload">关闭的回调</button>
 <button id="complex">复杂弹框 box</button>
 <button id="antijam">隐藏干扰物box</button>
+<button id="resize">可以改变大小</button>
 <br />
 <button id="changeskin">更换皮肤sea</button>
 <br />
@@ -92,7 +96,7 @@ Y.Box：
 		fixed:{boolean} true,box不会随着窗口滚动而滚动，false，box会随着窗口滚动而滚动，默认为true（ie6下始终会跟随页面滚动而滚动）
 		afterDrag:{function} 拖拽结束的回调，参数为box本身
 		draggable:{boolean} 是否可拖拽,默认为true
-		resizeable:{boolean} 是否可resize，默认为false（未实现）
+		resizeable:{boolean} 是否可resize，默认为false
 		afterResize:{function} resize结束的回调，参数为box，（未实现）
 		shownImmediately:{boolean} 是否初始化完成立即显示，默认为true
 		afterHide:{function} 隐藏完毕后的回调，参数为box
@@ -166,11 +170,12 @@ author:bachi@taobao.com（拔赤）
 <!--
 YUI({
 	combine:true,
-	base:'http://cn.yimg.com/i/yui/3.0.0/build/', 
-	root:"i/yui/3.0.0/build/",  
-	comboBase:"http://cn.yimg.com/combo?", 
-	charset:'utf-8',
-	loadOptional:true,
+	comboBase:'http://a.tbcdn.cn/??',
+	root:'s/yui/3.3.0/build/',
+	filter:{
+		'searchExp': "&", 
+		'replaceStr': ","
+	},
 	modules:{
 		'box-skin-default':{//默认皮肤
 			fullpath:'../skin/default.css',
@@ -182,7 +187,7 @@ YUI({
 		},
 		'box':{
 			fullpath:'../box.js',
-			requires:['box-skin-sea','node','overlay','dd-plugin']
+			requires:['box-skin-sea','node','overlay','dd-plugin','resize']
 		}
 	}
 }).use('box','console',function(Y){
@@ -347,6 +352,13 @@ YUI({
 			width:"600px",
 			height:"500px"
 			
+		});
+		
+	});
+	Y.one("#resize").on('click',function(e){
+		e.halt();
+		box = Y.Box.alert('可以改变窗口大小',null,{
+			resizeable:true
 		});
 		
 	});

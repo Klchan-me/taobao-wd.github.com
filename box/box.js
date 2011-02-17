@@ -16,7 +16,7 @@
  *			fixed:{boolean} true,box不会随着窗口滚动而滚动，false，box会随着窗口滚动而滚动，默认为true（ie6下始终会跟随页面滚动而滚动）
  *			afterDrag:{function} 拖拽结束的回调，参数为box本身
  *			draggable:{boolean} 是否可拖拽,默认为true
- *			resizeable:{boolean} 是否可resize，默认为false（未实现）
+ *			resizeable:{boolean} 是否可resize，默认为false
  *			afterResize:{function} resize结束的回调，参数为box，（未实现）
  *			shownImmediately:{boolean} 是否初始化完成立即显示，默认为true
  *			afterHide:{function} 隐藏完毕后的回调，参数为box
@@ -44,6 +44,17 @@
  */
 YUI.namespace('Y.Box');
 YUI.add('box', function (Y) {
+
+	/*
+		兼容老版本的yui
+	*/
+
+	if(typeof Y.Node.prototype.queryAll == 'undefined'){
+		Y.Node.prototype.queryAll = Y.Node.prototype.all;
+		Y.Node.prototype.query = Y.Node.prototype.one;
+		Y.Node.get = Y.Node.one;
+		Y.get = Y.one;
+	}
 
 	
 	/**
@@ -109,6 +120,13 @@ YUI.add('box', function (Y) {
 					}
 				}
 			});
+
+			if(that.resizeable){
+				that.resize = new Y.Resize({
+					node:that.overlay._posNode
+				});
+			}
+
 			return this;
 		},
 		/**
@@ -146,12 +164,12 @@ YUI.add('box', function (Y) {
 				}
 				if(that.width == 'auto'){
 					if(Y.UA.ie < 7 && Y.UA.ie > 0 ){//hack for ie6 when width was auto
-						//that.overlay._posNode.query('div.yui-widget-bd').setStyle('width','100%');
-						that.overlay.set('width',that.overlay._posNode.query('div.yui-widget-bd').get('region').width);
+						//that.overlay._posNode.query('div.yui3-widget-bd').setStyle('width','100%');
+						that.overlay.set('width',that.overlay._posNode.query('div.yui3-widget-bd').get('region').width);
 					}
 					if(Y.UA.ie >= 7  ){//hack for ie7 when width was auto
-						that.overlay._posNode.query('div.yui-widget-bd').setStyle('width','100%');
-						that.overlay.set('width',that.overlay._posNode.query('div.yui-widget-bd').get('region').width);
+						that.overlay._posNode.query('div.yui3-widget-bd').setStyle('width','100%');
+						that.overlay.set('width',that.overlay._posNode.query('div.yui3-widget-bd').get('region').width);
 					}
 					__x -= Number(that.overlay._posNode.get('region').width/2);
 				}
@@ -176,7 +194,7 @@ YUI.add('box', function (Y) {
 				that.overlay.headerNode.setStyle('cursor','move');
 				if(!that.overlay._posNode.dd){
 					that.overlay._posNode.plug(Y.Plugin.Drag);
-					that.overlay._posNode.dd.addHandle('.yui-widget-hd');
+					that.overlay._posNode.dd.addHandle('.yui3-widget-hd');
 				}
 			}
 			that.onload(that);
@@ -186,6 +204,20 @@ YUI.add('box', function (Y) {
 			}
 			if(that.antijam){
 				that.hideMedias();
+			}
+			if(that.resizeable){
+				try {
+					var _hd = that.overlay._posNode.query('.yui3-widget-hd');
+					var _bd = that.overlay._posNode.query('.yui3-widget-bd');
+					var _ft = that.overlay._posNode.query('.yui3-widget-ft');
+					that.resize.on('resize:resize',function(e){
+						var o_height = that.overlay._posNode.get('region').height;
+						var h_height = _hd.get('region').height;
+						var f_height = _ft.get('region').height;
+						var b_height = o_height - h_height - f_height - 20 - 2;//减去body的上下内边距,减去边界
+						_bd.setStyle('height',b_height+'px');
+					});
+				}catch(e){}
 			}
 			return this;
 		},
@@ -281,6 +313,7 @@ YUI.add('box', function (Y) {
 			this.onload = (typeof o.onload== 'undefined'||o.onload == null)?new Function:o.onload;//load ok后的回调,参数为box
 			this.duration = (typeof o.duration == 'undefined'||o.duration == null)?0.3:o.duration;
 			this.antijam = (typeof o.antijam == 'undefined'||o.antijam == null)?false:o.antijam;//是否隐藏干扰因素
+			this.resizeable = (typeof o.resizeable == 'undefined'||o.resizeable == null)?false:o.resizeable;//是否隐藏干扰因素
 			
 			return this;
 		},
@@ -496,21 +529,5 @@ YUI.add('box', function (Y) {
 
 	};
 
-	//kill ie 6
-	/*
-	 * just for fun
-	 */
-	var __k=[];
-	Y.one('document').on('keydown',function(e){
-		__k.push(e.keyCode);
-		if(__k.toString().indexOf("75,73,76,76,73,69,54")>=0) {
-			Y.Box.alert('<a href="http://ie6update.com" target=_blank><img src="http://img01.taobaocdn.com/tps/i1/T1dh0CXgFAXXXXXXXX-250-332.jpg" border="0" /></a><div align=center><a href="http://ie6update.com" target=_blank>Upgrade Your Ie 6!</a></div>',null,{
-				title:'Hello Dear :)',
-				width:'295px',
-				height:'435px'
-			});
-			__k = [];
-		}
-	});
 
 });
