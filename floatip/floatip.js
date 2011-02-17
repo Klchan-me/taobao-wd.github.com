@@ -29,6 +29,7 @@ YUI.add('floatip',function(Y){
 		Y.Node.prototype.queryAll = Y.Node.prototype.all;
 		Y.Node.prototype.query = Y.Node.prototype.one;
 		Y.Node.get = Y.Node.one;
+		Y.get = Y.one;
 	}
 
 	var FloatTip = function(){
