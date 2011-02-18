@@ -47,6 +47,10 @@ css grid 引用地址：
 
 # Examples
 
+## 使用YUI3组织你的web开发
+
+- [Demo](http://taobao-wd.github.com/yui3-custom-mojo/mojo.html)
+
 ## iframe 夸域高度自适应
 - [Doc](https://github.com/taobao-wd/taobao-wd.github.com/blob/master/cross-domain-autoheight/README.markdown)
 - 文件引用：[proxy.html](https://github.com/taobao-wd/taobao-wd.github.com/blob/master/cross-domain-autoheight/proxy.html)
