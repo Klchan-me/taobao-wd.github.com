@@ -128,21 +128,38 @@
         <div class="yui3-u-2-5" id="main">
             <div class="content">
                 <p>文本文本...Nam quis hendrerit enim. Donec tincidunt libero a dolor hendrerit at tempus quam venenatis. In quis tempus ipsum. Vestibulum nulla enim, bibendum ut vestibulum at, laoreet a felis.</p>
-				<p>中部选择日期的逻辑和左侧区域的tip实现相互无冲突,打开firebug，查看脚本的加载</p>
-				<div id="J_calendar"></div>
-				<div id="J_r">请选择日期</div>
-				<script>
-				//中部功能的引入,新增一个loader，会至多增加js和css各一个http请求
-				//这个部分的逻辑用到了日历和弹层
-				YUI(addModule({
-					'select-data':{
-						path:'project/select-data.js',
-						root:'app/dp/test/',
-						combine:true,
-						requires:['calendar','box']
-					}
-				})).use('select-data');
-				</script>
+					<!--这是第二个个功能单元,牵扯到的文件只有side-mojo.js和tab.css-->
+					<!--代码片段开始-->
+					<!--基于想通的head，可以直接拷走复用-->
+					<div id="J_tab_2" class="t-slide my-hack mt20">
+					  <ul class="tab-nav clearfix">
+					  </ul>
+					  <div class="tab-content">
+						<div class="tab-pannel"><p><img src="http://img01.taobaocdn.com/tps/i1/T1t4J0XjXlXXXXXXXX-490-170.png" /></p></div>
+						<div class="tab-pannel"><p><img src="http://img.alimama.cn/bcrm/adboard/picture/2011-01-17/110117153135489.jpg" /></p></div>
+						<div class="tab-pannel"><p><img src="http://img.alimama.cn/bcrm/adboard/picture/2011-02-17/110217114213527.jpg" /></p></div>
+
+						<div class="tab-pannel"><p><img src="http://img.alimama.cn/bcrm/adboard/picture/2011-02-14/110214151738919.jpg" /></p></div>
+					  </div>
+					</div>
+					<script>
+						//这里至多只增加1个js请求和一个css请求
+						YUI(addModule({
+							'slide-mojo':{
+								path:'project/slide-mojo.js',
+								root:'app/dp/test/',
+								combine:true,
+								requires:['slide','slide-mojo-skin']
+							},
+							'slide-mojo-skin':{
+								path:'project/tab.css',
+								root:'app/dp/test/',
+								combine:true,
+								type:'css'
+							}
+						})).use('slide-mojo');
+					</script>
+					<!--代码片段结束-->
 
                 <div class="yui3-g thumb-captions">
                     <div class="yui3-u-1-3">
@@ -177,24 +194,59 @@
             <div class="content">
                 <div class="yui3-g">
                     <div id="top-stories">
-                        <div class="yui3-u-1-2">
-                            <ol>
-                                <li><a href="#">lorem ipsum dolor</a></li>
-                                <li><a href="#">lorem ipsum dolor</a></li>
-                                <li><a href="#">lorem ipsum dolor</a></li>
-                                <li><a href="#">lorem ipsum dolor</a></li>
-                                <li><a href="#">lorem ipsum dolor</a></li>
-                            </ol>
-                        </div>
+					<!--页面右侧tab切换{{-->
+						<div id="J_tab_1" class="t-tabview my-hack">
+						  <ul class="tab-nav clearfix">
+							<li class="selected"><a href="#tab1"><em>Tab One</em></a></li>
+							<li><a href="#tab2"><em>Tab Two</em></a></li>
+							<li><a href="#tab3"><em>延时加载</em></a></li>
+						  </ul>
 
-                        <div class="yui3-u-1-2">
-                            <ol start="6">
-                                <li><a href="#">lorem ipsum dolor</a></li>
-                                <li><a href="#">lorem ipsum dolor</a></li>
-                                <li><a href="#">lorem ipsum dolor</a></li>
-                                <li><a href="#">lorem ipsum dolor</a></li>
-                            </ol>
-                        </div>
+						  <div class="tab-content">
+							<div class="tab-pannel"><p>Tab One ContentTab One ContentTab One ContentTab One Content</p></div>
+							<div class="tab-pannel hidden"><p>Tab Two ContentTab Two ContentTab Two ContentTab Two ContentTab Two Content</p></div>
+							<div class="tab-pannel hidden"><p>
+								<!--延时加载的内容，延时加载的内容包含在各一个css和js请求中-->
+								<textarea class="lazyload">
+									<div id="J_calendar"></div>
+									<div id="J_r">请选择日期</div>
+									<script>
+									//中部功能的引入,新增一个loader，会至多增加js和css各一个http请求
+									//这个部分的逻辑用到了日历和弹层
+									YUI(addModule({
+										'select-data':{
+											path:'project/select-data.js',
+											root:'app/dp/test/',
+											combine:true,
+											requires:['calendar','box']
+										}
+									})).use('select-data');
+									</script>
+								</textarea></p>
+							</div>
+						  </div>
+						</div>
+						<script>
+						//tab切换的逻辑
+						YUI(addModule({
+							'right-tab':{
+								path:'project/tab-check.js',
+								root:'app/dp/test/',
+								combine:true,
+								requires:['slide','tab-skin']
+							},
+							'tab-skin':{
+								path:'project/tab.css',
+								root:'app/dp/test/',
+								combine:true,
+								type:'css'
+							}
+						})).use('right-tab'/*加载文件*/).use('tab-check-logic'/*执行文件中的模块逻辑*/);
+						</script>
+
+
+					<!--页面右侧tab切换}}-->
+
                     </div>
                 </div>
                 <div class="advertisement">
