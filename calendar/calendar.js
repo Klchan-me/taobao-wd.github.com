@@ -941,7 +941,6 @@ YUI.add('calendar', function (Y) {
 			 */
 			this.createDS = function(){
 				var cc = this;
-
 				var s = '';
 				var startweekday = new Date(cc.year+'/'+(cc.month+1)+'/01').getDay();//当月第一天是星期几
 				var k = cc.fathor.getNumOfDays(cc.year,cc.month + 1) + startweekday;
