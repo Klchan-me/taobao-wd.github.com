@@ -261,6 +261,24 @@ YUI.add('calendar', function (Y) {
 			}
 			return this;
 		},
+        handleOffset: function() {
+            var that = this,
+                data = ['日','一','二','三','四','五','六'],
+                temp = '<span>{$day}</span>',
+                offset = that.startDay,
+                day_html = '',
+                a = [];
+            for (var i = 0; i < 7; i++) {
+                a[i] = {
+                    day:data[(i - offset + 7) % 7]
+                };
+            }
+            day_html = that.templetShow(temp, a);
+
+            return {
+                day_html:day_html
+            };
+        },
 		/**
 		 * 创建参数列表
 		 */
@@ -282,7 +300,11 @@ YUI.add('calendar', function (Y) {
 			that.arrow_right = (typeof o.arrow_right == 'undefined' || o.arrow_right == null)?false:o.arrow_right;
 			that.popup = (typeof o.popup == 'undefined' || o.popup== null)?false:o.popup;
 			that.withtime = (typeof o.withtime == 'undefined' || o.withtime == null)?false:o.withtime;
+			that.startDay = (typeof o.startday == 'undefined' || o.startDay == null)?0:o.startDay;
 			that.action = (typeof o.action == 'undefined' || o.action == null)?['click']:o.action;
+            if(o.startDay){
+				that.startDay = (7 - o.startDay) % 7;
+			}
 			if(typeof o.useShim !== 'undefined' && o.useShim === true){
 				that.useShim = true;	
 			}else if(typeof o.useShim !== 'undefined' && o.useShim === false){
@@ -697,6 +719,7 @@ YUI.add('calendar', function (Y) {
 					'</div>',
 					'<div class="c-bd">',
 						'<div class="whd">',
+							/*
 							'<span>日</span>',
 							'<span>一</span>',
 							'<span>二</span>',
@@ -704,6 +727,8 @@ YUI.add('calendar', function (Y) {
 							'<span>四</span>',
 							'<span>五</span>',
 							'<span>六</span>',
+							*/
+							fathor.handleOffset().day_html,
 						'</div>',
 						'<div class="dbd clearfix">',
 							'{$ds}',
@@ -942,7 +967,7 @@ YUI.add('calendar', function (Y) {
 			this.createDS = function(){
 				var cc = this;
 				var s = '';
-				var startweekday = new Date(cc.year+'/'+(cc.month+1)+'/01').getDay();//当月第一天是星期几
+				var startweekday = (new Date(cc.year + '/' + (cc.month + 1) + '/01').getDay() + cc.fathor.startDay + 7) % 7;//当月第一天是星期几
 				var k = cc.fathor.getNumOfDays(cc.year,cc.month + 1) + startweekday;
 				
 				for(var i = 0;i< k;i++){

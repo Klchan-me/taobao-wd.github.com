@@ -31,7 +31,6 @@ YUI.add('slide',function(Y){
 				pannelnode:that.pannels.item(0)
 			});
 
-
 			if(that.reverse){
 				var _t ;
 				_t = that.previous,
@@ -40,6 +39,63 @@ YUI.add('slide',function(Y){
 			}
 
 			return this;
+		},
+		//渲染textarea中的内容，并放在与之相邻的一个div中，若有脚本，执行其中脚本
+		renderLazyData:function(textarea){
+			textarea.setStyle('display','none');
+			if(textarea.getAttribute('lazy-data')=='1'){
+				return ;
+			}
+			textarea.setAttribute('lazy-data','1');
+			var	id = Y.stamp(div),
+				html = textarea.get('innerHTML').replace(/&lt;/ig,'<').replace(/&gt;/ig,'>'),
+				div = Y.Node.create('<div>'+html+'</div>');
+			textarea.insert(div,'before');
+
+			var globalEval = function(data){
+				if (data && /\S/.test(data)) {
+					var head = document.getElementsByTagName('head')[0] || docElem,
+						script = document.createElement('script');
+
+					// It works! All browsers support!
+					script.text = data;
+
+					head.insertBefore(script, head.firstChild);
+					head.removeChild(script);
+				}
+			};
+
+			var id = 'K_'+new Date().getTime().toString(),
+				re_script = new RegExp(/<script([^>]*)>([^<]*(?:(?!<\/script>)<[^<]*)*)<\/script>/ig); // 防止
+
+
+			var hd = Y.Node.getDOMNode(Y.one('head')),
+				match, attrs, srcMatch, charsetMatch,
+				t, s, text,
+				RE_SCRIPT_SRC = /\ssrc=(['"])(.*?)\1/i,
+				RE_SCRIPT_CHARSET = /\scharset=(['"])(.*?)\1/i;
+
+			re_script.lastIndex = 0;
+			while ((match = re_script.exec(html))) {
+				attrs = match[1];
+				srcMatch = attrs ? attrs.match(RE_SCRIPT_SRC) : false;
+				// script via src
+				if (srcMatch && srcMatch[2]) {
+					s = document.createElement('script');
+					s.src = srcMatch[2];
+					// set charset
+					if ((charsetMatch = attrs.match(RE_SCRIPT_CHARSET)) && charsetMatch[2]) {
+						s.charset = charsetMatch[2];
+					}
+					s.async = true; // make sure async in gecko
+					hd.appendChild(s);
+				}
+				// inline script
+				else if ((text = match[2]) && text.length > 0) {
+					globalEval(text);
+				}
+			}
+				
 		},
 		/**
 		 * 事件中心
@@ -396,13 +452,13 @@ YUI.add('slide',function(Y){
 				pannelnode:that.pannels.item(index)
 			});
 			//延迟执行的脚本
-			var scriptsArea = that.pannels.item(index).queryAll('textarea.lazyload');
+			var scriptsArea = that.pannels.item(index).all('.lazyload');
 			if(scriptsArea){
 				scriptsArea.each(function(node,i){
-					node.setStyle('display','none');
-					that.pannels.item(index).append(node.get('value'));
+					that.renderLazyData(node);
+					//that.pannels.item(index).append(node.get('value'));
 				});
-				scriptsArea.remove();
+				//scriptsArea.remove();
 			}
 		},
 		//去往任意一个,0,1,2,3...

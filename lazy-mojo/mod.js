@@ -6,7 +6,7 @@ var mods = {
 		fullpath:'page2.js'
 	},
 	slide:{
-		fullpath:'../slide/slide.js',
+		fullpath:'../slide/slide.js?'+new Date().getTime(),
 		requires:['node','anim']
 	},
 	calendar:{
