@@ -2,7 +2,8 @@
 <html>
 <head>
 <meta charset="utf-8"/>
-<script src="http://a.tbcdn.cn/s/yui/3.2.0/build/yui/yui-min.js" type="text/javascript"></script>
+<!--支持3.2.0和3.3.0-->
+<script src="http://a.tbcdn.cn/s/yui/3.3.0/build/yui/yui-min.js" type="text/javascript"></script>
 </head>
 <body>
 <style>
@@ -14,13 +15,19 @@
 YUI({
 	combine:true,
 	comboBase:'http://a.tbcdn.cn/??',
-	base:'http://a.tbcdn.cn/s/yui/3.2.0/build/',
-	root:'s/yui/3.2.0/build/',
+	base:'http://a.tbcdn.cn/s/yui/3.3.0/build/',
+	root:'s/yui/3.3.0/build/',
 	filter:{
 		'searchExp': '&', 
 		'replaceStr': ','
+	},
+	modules:{
+		'lazyload':{
+			fullpath:'lazyload.js',
+			requires:['node']
+		}
 	}
-}).use('imageloader',function(Y){
+}).use('imageloader','lazyload',function(Y){
 	Y.on('domready',function(e){
 
 		/**
@@ -36,29 +43,15 @@ YUI({
 			imageloader.registerImage({ domId:node.get('id'),srcUrl: node.getAttribute('yui-lazyload') });
 		});
 
+
 		/**
 		 * 延时加载Dom节点，滚动到屏幕底部可以看到延时渲染的部分 
 		 * <textarea class="yui-lazyrender"></textarea>
+		 * 依赖 lazyload.js
+		 *
+		 * new Y.Lazyload(node1,node2...);
 		 */
-		Y.all('textarea.yui-lazyrender').each(function(node){ //扫描指定选择器的textarea的内容，进行延时加载
-			var div = Y.Node.create('<div></div>'),
-				id = Y.stamp(div);
-			node.insert(div,'before');
-			node.setAttribute('render-ok',false);
-			var render = function(){
-				if(div.inViewportRegion()){
-					node.setAttribute('render-ok',true);
-					div.set('innerHTML',node.get('innerHTML').replace(/&lt;/ig,'<').replace(/&gt;/ig,'>'));
-					onScroll.detach();
-				}
-			};
-			var onScroll = Y.on(['scroll','resize'],function(e){
-				render();
-			},window);
-
-			render();
-			
-		});
+		new Y.Lazyload(Y.all('textarea.yui-lazyrender'));
 
 	});
 
@@ -185,6 +178,12 @@ YUI({
                 </div>
 
             </div>
+延时加载的dom
+<textarea class="yui-lazyrender">
+	<div class="PicDetail">
+		<img width="100" height="75" src="http://developer.yahoo.com/yui/docs/assets/examples/exampleimages/small/museum.jpg" />?<a class="link666" href="/photos/wee_photo/3564145673/#DiscussPhoto">8 comments</a>??
+	</div>
+</textarea>
 
 
             <div class="ListThings">
