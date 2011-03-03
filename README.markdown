@@ -28,7 +28,7 @@ css reset 引用地址：
 
 ## Css Grid 
 
-使用 Kissy 中的 950 栅格系统,990栅格和950栅格本质上无异，只需重新定义全局容器的宽度为990即可
+使用 Kissy 中的 950 栅格系统,990栅格和950栅格本质上无异，只需重新定义全局容器的宽度为990即可,
 
 - [Kissy CssGrid Doc](http://docs.kissyui.com/kissy/docs/cssgrids/index.html)
 - [Demo 页面](http://kissyteam.github.com/kissy/src/cssgrids/grids-taobao.html)
